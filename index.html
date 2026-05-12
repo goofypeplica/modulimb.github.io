@@ -3,253 +3,968 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Modulimb | Rapid Prototyping</title>
-  <meta name="description" content="Modulimb - Rapid prototyping, 3D modeling, 3D scanning, 3D printing, mechatronic design, FEM/CFD analysis, and prosthetic design." />
+  <title>Modulimb | Prototipazione rapida e sviluppo prodotto</title>
+  <meta name="description" content="Modulimb sviluppa prototipi, componenti e sistemi su misura con modellazione 3D, scansione, stampa, meccatronica, simulazione FEM/CFD e progettazione di protesi." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --bg:#f6f7f8; --surface:rgba(255,255,255,.72); --text:#1f2b2d; --muted:#5d6b70;
-      --teal:#2f7f82; --teal2:#55b7c1; --teal3:#0f4f55; --accent:#dfe9ea; --line:rgba(47,127,130,.18);
-      --shadow:0 20px 60px rgba(14,28,31,.12);
-      --radius:28px;
+    :root,
+    [data-theme="light"] {
+      --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+      --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+      --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+      --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+      --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+      --text-2xl: clamp(2rem, 1.2rem + 2.5vw, 3.5rem);
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      --space-12: 3rem;
+      --space-16: 4rem;
+      --space-20: 5rem;
+      --space-24: 6rem;
+      --color-bg: #f5f4f1;
+      --color-surface: #fbfaf7;
+      --color-surface-2: #f0eeea;
+      --color-surface-offset: #e7e3de;
+      --color-border: rgba(30, 37, 40, 0.12);
+      --color-divider: rgba(30, 37, 40, 0.08);
+      --color-text: #1c2326;
+      --color-text-muted: #5f6a70;
+      --color-text-faint: #97a0a4;
+      --color-primary: #0d6a70;
+      --color-primary-hover: #0b555a;
+      --color-primary-highlight: rgba(13, 106, 112, 0.09);
+      --color-text-inverse: #f7f7f4;
+      --radius-sm: 0.375rem;
+      --radius-md: 0.75rem;
+      --radius-lg: 1.25rem;
+      --radius-xl: 1.75rem;
+      --radius-full: 9999px;
+      --shadow-sm: 0 1px 2px rgba(22, 25, 27, 0.05);
+      --shadow-md: 0 12px 30px rgba(22, 25, 27, 0.08);
+      --content-default: 1140px;
+      --transition-interactive: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+      --font-display: 'Manrope', 'Inter', sans-serif;
+      --font-body: 'Instrument Sans', 'Inter', sans-serif;
     }
-    *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at top, #ffffff 0%, var(--bg) 58%, #edf2f3 100%);color:var(--text);overflow-x:hidden}
-    body::before{content:"";position:fixed;inset:0;background:linear-gradient(120deg, rgba(85,183,193,.12), transparent 38%, rgba(47,127,130,.08));pointer-events:none;z-index:0}
-    .noise{position:fixed;inset:0;opacity:.05;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(0,0,0,.8) 1px, transparent 1px),linear-gradient(90deg, rgba(0,0,0,.8) 1px, transparent 1px);background-size:120px 120px}
-    header,main,footer{position:relative;z-index:1}
-    .nav{position:fixed;top:18px;left:50%;transform:translateX(-50%);width:min(1180px,calc(100% - 28px));display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.58);backdrop-filter:blur(18px);border-radius:999px;box-shadow:var(--shadow);z-index:10}
-    .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text)}
-    .brand img{width:42px;height:42px;object-fit:contain;border-radius:12px}
-    .brand strong{font-size:1rem;letter-spacing:.04em}
-    .navlinks{display:flex;gap:18px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
-    .navlinks a,.lang button{border:0;background:none;color:var(--muted);text-decoration:none;font:inherit;cursor:pointer;padding:8px 10px;border-radius:999px;transition:.25s ease}
-    .navlinks a:hover,.lang button:hover,.lang button.active{color:var(--text);background:rgba(47,127,130,.1)}
-    .hero{min-height:100vh;display:grid;place-items:center;padding:120px 20px 60px;overflow:hidden}
-    .hero-inner{width:min(1180px,100%);display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center}
-    .card{background:var(--surface);border:1px solid rgba(255,255,255,.7);backdrop-filter:blur(16px);border-radius:var(--radius);box-shadow:var(--shadow)}
-    .hero-copy{padding:40px}
-    .eyebrow{display:inline-flex;gap:8px;align-items:center;padding:9px 14px;border-radius:999px;background:rgba(47,127,130,.1);color:var(--teal3);font-weight:700;font-size:.88rem;letter-spacing:.04em;text-transform:uppercase}
-    h1{font-size:clamp(3rem,6vw,5.8rem);line-height:.9;margin:20px 0 14px;letter-spacing:-.05em}
-    .grad{background:linear-gradient(135deg,var(--teal3),var(--teal2) 55%, #9fe7e6);-webkit-background-clip:text;background-clip:text;color:transparent}
-    .lead{font-size:1.08rem;line-height:1.8;color:var(--muted);max-width:58ch}
-    .cta{display:flex;gap:14px;flex-wrap:wrap;margin-top:28px}
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:14px 22px;border-radius:999px;text-decoration:none;font-weight:700;border:1px solid transparent;transition:.25s ease;cursor:pointer}
-    .btn.primary{background:linear-gradient(135deg,var(--teal3),var(--teal));color:#fff;box-shadow:0 14px 30px rgba(15,79,85,.26)}
-    .btn.secondary{background:#fff;color:var(--text);border-color:rgba(47,127,130,.18)}
-    .btn:hover{transform:translateY(-2px)}
-    .hero-visual{position:relative;min-height:520px;display:grid;place-items:center}
-    .orb{position:absolute;border-radius:50%;filter:blur(0)}
-    .orb.a{width:340px;height:340px;background:radial-gradient(circle, rgba(85,183,193,.42), rgba(85,183,193,.05) 70%, transparent 72%);top:20px;right:12px;transform:translateZ(0)}
-    .orb.b{width:220px;height:220px;background:radial-gradient(circle, rgba(47,127,130,.38), rgba(47,127,130,.04) 72%, transparent 74%);left:12px;bottom:36px}
-    .mock{position:relative;width:min(100%,540px);aspect-ratio:1/1;display:grid;place-items:center}
-    .mock img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 30px 40px rgba(0,0,0,.12))}
-    .scroll-cue{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);color:var(--muted);font-size:.88rem;letter-spacing:.18em;text-transform:uppercase}
-    section{padding:90px 20px}
-    .section-inner{width:min(1180px,100%);margin:0 auto}
-    .section-title{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:24px}
-    .section-title h2{margin:0;font-size:clamp(2rem,4vw,3.3rem);line-height:1;letter-spacing:-.04em}
-    .section-title p{margin:0;color:var(--muted);max-width:60ch;line-height:1.7}
-    .services{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-    .service{padding:26px;position:relative;overflow:hidden}
-    .service::after{content:"";position:absolute;inset:auto -30% -30% auto;width:180px;height:180px;background:radial-gradient(circle, rgba(85,183,193,.18), transparent 65%);transform:translate3d(0,0,0)}
-    .service h3{margin:0 0 10px;font-size:1.2rem}
-    .service p{margin:0;color:var(--muted);line-height:1.75}
-    .service .icon{font-size:1.4rem;margin-bottom:14px;display:inline-block}
-    .story{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:stretch}
-    .panel{padding:30px}
-    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
-    .stat{padding:18px;border-radius:22px;background:rgba(255,255,255,.72);border:1px solid rgba(47,127,130,.12)}
-    .stat strong{display:block;font-size:1.6rem;color:var(--teal3)}
-    .stat span{color:var(--muted);font-size:.92rem}
-    .timeline{display:grid;gap:12px;margin-top:16px}
-    .step{display:flex;gap:14px;align-items:flex-start;padding:16px 18px;border-radius:20px;background:rgba(255,255,255,.66);border:1px solid rgba(47,127,130,.12)}
-    .step b{min-width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:rgba(47,127,130,.12);color:var(--teal3)}
-    .contact{display:grid;grid-template-columns:1fr .9fr;gap:18px;align-items:stretch}
-    .contact form{display:grid;gap:12px}
-    input,textarea{width:100%;padding:14px 16px;border-radius:16px;border:1px solid rgba(47,127,130,.18);background:#fff;font:inherit;color:var(--text)}
-    textarea{min-height:130px;resize:vertical}
-    footer{padding:24px 20px 40px;color:var(--muted);text-align:center}
-    .floating{position:fixed;right:18px;bottom:18px;z-index:11}
-    .floating a{display:inline-flex;align-items:center;justify-content:center;width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--teal3),var(--teal2));color:#fff;text-decoration:none;box-shadow:var(--shadow)}
-    .reveal{opacity:0;transform:translateY(26px);transition:1s ease}
-    .reveal.visible{opacity:1;transform:none}
-    @media (max-width: 980px){.hero-inner,.story,.contact,.services{grid-template-columns:1fr}.nav{border-radius:24px}.navlinks{gap:6px}.hero-copy{padding:28px}.hero-visual{min-height:380px}}
+
+    [data-theme="dark"] {
+      --color-bg: #141716;
+      --color-surface: #1b1e1d;
+      --color-surface-2: #222625;
+      --color-surface-offset: #2a2f2d;
+      --color-border: rgba(232, 236, 234, 0.12);
+      --color-divider: rgba(232, 236, 234, 0.08);
+      --color-text: #e4e7e4;
+      --color-text-muted: #aab1b4;
+      --color-text-faint: #747b7e;
+      --color-primary: #69a8ae;
+      --color-primary-hover: #82bac0;
+      --color-primary-highlight: rgba(105, 168, 174, 0.12);
+      --color-text-inverse: #141716;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.18);
+      --shadow-md: 0 18px 42px rgba(0, 0, 0, 0.28);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme]) {
+        --color-bg: #141716;
+        --color-surface: #1b1e1d;
+        --color-surface-2: #222625;
+        --color-surface-offset: #2a2f2d;
+        --color-border: rgba(232, 236, 234, 0.12);
+        --color-divider: rgba(232, 236, 234, 0.08);
+        --color-text: #e4e7e4;
+        --color-text-muted: #aab1b4;
+        --color-text-faint: #747b7e;
+        --color-primary: #69a8ae;
+        --color-primary-hover: #82bac0;
+        --color-primary-highlight: rgba(105, 168, 174, 0.12);
+        --color-text-inverse: #141716;
+      }
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      scroll-padding-top: 6rem;
+    }
+    body {
+      min-height: 100dvh;
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: 1.6;
+      color: var(--color-text);
+      background: var(--color-bg);
+    }
+    img, svg { display: block; max-width: 100%; height: auto; }
+    a { color: inherit; text-decoration: none; }
+    button, input, textarea { font: inherit; color: inherit; }
+    button { background: none; border: none; cursor: pointer; }
+    h1, h2, h3 { font-family: var(--font-display); line-height: 1.05; text-wrap: balance; }
+    p { max-width: 68ch; color: var(--color-text-muted); text-wrap: pretty; }
+    :focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 3px;
+      border-radius: var(--radius-sm);
+    }
+    .skip-link {
+      position: absolute;
+      left: var(--space-4);
+      top: -3rem;
+      background: var(--color-text);
+      color: var(--color-text-inverse);
+      padding: 0.7rem 1rem;
+      border-radius: var(--radius-full);
+      z-index: 100;
+    }
+    .skip-link:focus { top: var(--space-4); }
+    .container {
+      width: min(calc(100% - 2rem), var(--content-default));
+      margin-inline: auto;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: 0.55rem 0.9rem;
+      border-radius: var(--radius-full);
+      background: var(--color-primary-highlight);
+      color: var(--color-primary);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .section {
+      padding-block: clamp(var(--space-12), 9vw, var(--space-24));
+      border-top: 1px solid var(--color-divider);
+    }
+    .section-head {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: var(--space-6);
+      margin-bottom: var(--space-8);
+      align-items: end;
+    }
+    .section-head h2 { font-size: var(--text-2xl); }
+    .section-head p { justify-self: end; }
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid var(--color-divider);
+      background: color-mix(in srgb, var(--color-bg) 92%, transparent);
+      backdrop-filter: blur(14px);
+    }
+    .nav-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+      min-height: 4.75rem;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.9rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+    .brand-mark {
+      width: 2.4rem;
+      height: 2.4rem;
+      border-radius: 0.85rem;
+      display: grid;
+      place-items: center;
+      background: var(--color-text);
+      color: var(--color-text-inverse);
+      box-shadow: var(--shadow-sm);
+    }
+    .brand-mark svg { width: 1.3rem; height: 1.3rem; }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .nav-links a,
+    .lang button,
+    .theme-toggle {
+      min-height: 44px;
+      padding: 0.65rem 0.9rem;
+      border-radius: var(--radius-full);
+      color: var(--color-text-muted);
+      transition: background var(--transition-interactive), color var(--transition-interactive);
+    }
+    .nav-links a:hover,
+    .lang button:hover,
+    .theme-toggle:hover,
+    .lang button.active {
+      background: var(--color-primary-highlight);
+      color: var(--color-text);
+    }
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .hero {
+      padding-block: clamp(4rem, 10vw, 7rem) clamp(3rem, 7vw, 5rem);
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+      gap: clamp(var(--space-8), 4vw, var(--space-12));
+      align-items: start;
+    }
+    .hero-copy h1 {
+      font-size: clamp(2.9rem, 6vw, 5.4rem);
+      letter-spacing: -0.06em;
+      margin-top: var(--space-5);
+      margin-bottom: var(--space-5);
+      max-width: 12ch;
+    }
+    .hero-copy p {
+      font-size: var(--text-lg);
+      max-width: 58ch;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+      margin-top: var(--space-8);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0.9rem 1.2rem;
+      border-radius: var(--radius-full);
+      border: 1px solid transparent;
+      font-weight: 700;
+      transition: transform var(--transition-interactive), background var(--transition-interactive), color var(--transition-interactive), border-color var(--transition-interactive);
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary {
+      background: var(--color-text);
+      color: var(--color-text-inverse);
+    }
+    .btn-primary:hover { background: var(--color-primary-hover); }
+    .btn-secondary {
+      border-color: var(--color-border);
+      background: var(--color-surface);
+      color: var(--color-text);
+    }
+    .hero-panel {
+      background: linear-gradient(180deg, var(--color-surface), var(--color-surface-2));
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+    .panel-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-4) var(--space-5);
+      border-bottom: 1px solid var(--color-divider);
+      color: var(--color-text-muted);
+      font-size: var(--text-sm);
+    }
+    .panel-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    .panel-cell {
+      min-height: 190px;
+      padding: var(--space-5);
+      border-right: 1px solid var(--color-divider);
+      border-bottom: 1px solid var(--color-divider);
+    }
+    .panel-cell:nth-child(2n) { border-right: none; }
+    .panel-cell strong {
+      display: block;
+      margin-bottom: var(--space-2);
+      font-size: var(--text-lg);
+      color: var(--color-text);
+    }
+    .metric-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--color-divider);
+    }
+    .metric {
+      background: var(--color-surface);
+      padding: var(--space-5);
+    }
+    .metric b {
+      display: block;
+      font-size: var(--text-xl);
+      margin-bottom: 0.2rem;
+      color: var(--color-primary);
+    }
+    .services-grid,
+    .applications-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-4);
+    }
+    .card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      box-shadow: var(--shadow-sm);
+    }
+    .card h3 {
+      font-size: var(--text-lg);
+      margin-bottom: var(--space-3);
+    }
+    .card p { font-size: var(--text-sm); }
+    .service-index,
+    .app-tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 2.1rem;
+      height: 2.1rem;
+      margin-bottom: var(--space-4);
+      padding-inline: 0.6rem;
+      border-radius: var(--radius-full);
+      background: var(--color-primary-highlight);
+      color: var(--color-primary);
+      font-size: var(--text-xs);
+      font-weight: 700;
+    }
+    .process-layout,
+    .contact-layout {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: var(--space-4);
+      align-items: start;
+    }
+    .steps {
+      display: grid;
+      gap: var(--space-3);
+      margin-top: var(--space-6);
+    }
+    .step {
+      display: grid;
+      grid-template-columns: 44px 1fr;
+      gap: var(--space-4);
+      align-items: start;
+      padding: var(--space-4);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+    }
+    .step-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-full);
+      display: grid;
+      place-items: center;
+      background: var(--color-text);
+      color: var(--color-text-inverse);
+      font-weight: 700;
+    }
+    .bullet-list {
+      display: grid;
+      gap: var(--space-4);
+    }
+    .bullet-list li {
+      list-style: none;
+      padding-top: var(--space-4);
+      border-top: 1px solid var(--color-divider);
+      color: var(--color-text-muted);
+    }
+    .bullet-list strong { color: var(--color-text); }
+    .visual-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-4);
+    }
+    figure.media-card {
+      overflow: hidden;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+    }
+    .media-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      background: var(--color-surface-offset);
+    }
+    .media-card figcaption {
+      padding: 0.9rem 1rem;
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+    }
+    form {
+      display: grid;
+      gap: var(--space-3);
+    }
+    label {
+      display: grid;
+      gap: 0.45rem;
+      font-size: var(--text-sm);
+      color: var(--color-text);
+      font-weight: 600;
+    }
+    input, textarea {
+      width: 100%;
+      min-height: 48px;
+      padding: 0.9rem 1rem;
+      border-radius: 1rem;
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+    }
+    textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+    .contact-note {
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+    }
+    .cta-panel {
+      background: var(--color-text);
+      color: var(--color-text-inverse);
+    }
+    .cta-panel p,
+    .cta-panel li,
+    .cta-panel a { color: rgba(247, 247, 244, 0.82); }
+    .cta-panel h3 { margin-bottom: var(--space-3); }
+    .contact-list {
+      display: grid;
+      gap: var(--space-3);
+      margin-top: var(--space-5);
+    }
+    .contact-list a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+    .dot {
+      width: 0.65rem;
+      height: 0.65rem;
+      border-radius: 50%;
+      background: var(--color-primary);
+      flex: none;
+    }
+    footer {
+      padding: var(--space-8) 0 var(--space-10);
+      color: var(--color-text-muted);
+    }
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+      padding-top: var(--space-5);
+      border-top: 1px solid var(--color-divider);
+    }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 700ms ease, transform 700ms ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+    @media (max-width: 1024px) {
+      .hero-grid,
+      .section-head,
+      .process-layout,
+      .contact-layout,
+      .services-grid,
+      .applications-grid,
+      .visual-strip {
+        grid-template-columns: 1fr 1fr;
+      }
+      .section-head p { justify-self: start; }
+    }
+    @media (max-width: 760px) {
+      .nav-wrap {
+        align-items: flex-start;
+        flex-direction: column;
+        padding-block: 0.85rem;
+      }
+      .nav-links {
+        width: 100%;
+        justify-content: flex-start;
+      }
+      .controls { width: 100%; }
+      .hero-grid,
+      .section-head,
+      .services-grid,
+      .applications-grid,
+      .process-layout,
+      .contact-layout,
+      .visual-strip,
+      .panel-grid,
+      .metric-row {
+        grid-template-columns: 1fr;
+      }
+      .panel-cell { border-right: none; }
+      .hero-copy h1 { max-width: 11ch; }
+      .metric-row { gap: 1px; }
+      .footer-row { align-items: flex-start; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="noise"></div>
-  <header class="nav card">
-    <a class="brand" href="#top"><img src="./assets/images/logo-2.jpg" alt="Modulimb logo"><strong>MODULIMB</strong></a>
-    <nav class="navlinks" aria-label="Main navigation">
-      <a href="#services" data-i18n="nav_services">Servizi</a>
-      <a href="#process" data-i18n="nav_process">Processo</a>
-      <a href="#contact" data-i18n="nav_contact">Contatto</a>
-      <span class="lang" aria-label="Language switcher">
-        <button id="itBtn" class="active">IT</button>
-        <button id="enBtn">EN</button>
-      </span>
-    </nav>
+  <a class="skip-link" href="#main">Vai al contenuto</a>
+
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="#top" aria-label="Modulimb home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 7.5 12 4l7 3.5v9L12 20l-7-3.5v-9Z"></path>
+            <path d="M12 4v16"></path>
+            <path d="M5 7.5 12 11l7-3.5"></path>
+          </svg>
+        </span>
+        <span>MODULIMB</span>
+      </a>
+
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#services" data-i18n="navservices">Servizi</a>
+        <a href="#process" data-i18n="navprocess">Metodo</a>
+        <a href="#applications" data-i18n="navapplications">Applicazioni</a>
+        <a href="#contact" data-i18n="navcontact">Contatto</a>
+      </nav>
+
+      <div class="controls">
+        <span class="lang" aria-label="Language switcher">
+          <button id="itBtn" class="active" type="button">IT</button>
+          <button id="enBtn" type="button">EN</button>
+        </span>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </div>
+    </div>
   </header>
 
-  <main id="top">
-    <section class="hero">
-      <div class="hero-inner">
-        <div class="hero-copy card reveal">
-          <span class="eyebrow" data-i18n="hero_badge">Rapid prototyping • design avanzato</span>
-          <h1 class="grad" data-i18n="hero_title">Diamo forma a idee complesse</h1>
-          <p class="lead" data-i18n="hero_text">Modulimb sviluppa prototipi rapidi, dal concept al pezzo funzionale, con modellazione 3D, scansione, stampa 3D, design meccatronico/robotico, analisi FEM/CFD e progettazione di protesi.</p>
-          <div class="cta">
-            <a class="btn primary" href="#contact" data-i18n="cta_primary">Richiedi un progetto</a>
-            <a class="btn secondary" href="#services" data-i18n="cta_secondary">Esplora i servizi</a>
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="container hero-grid">
+        <div class="hero-copy reveal">
+          <span class="eyebrow" data-i18n="herobadge">Rapid prototyping · engineering development</span>
+          <h1 data-i18n="herotitle">Dallo studio del componente al prototipo pronto da validare.</h1>
+          <p data-i18n="herotext">Modulimb supporta aziende, studi tecnici e progetti medicali con modellazione 3D, scansione, stampa, simulazione e sviluppo meccatronico. L’obiettivo non è mostrare tecnologia, ma accelerare decisioni, test e industrializzazione.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#contact" data-i18n="ctaprimary">Richiedi una valutazione</a>
+            <a class="btn btn-secondary" href="#services" data-i18n="ctasecondary">Vedi le competenze</a>
           </div>
         </div>
-        <div class="hero-visual reveal">
-          <div class="orb a" data-parallax="0.25"></div>
-          <div class="orb b" data-parallax="0.15"></div>
-          <div class="mock" data-parallax="0.10">
-            <img src="./assets/images/world-wide-web.jpg" alt="Modulimb visual theme">
-          </div>
-        </div>
-      </div>
-      <div class="scroll-cue">Scroll</div>
-    </section>
 
-    <section id="services">
-      <div class="section-inner">
-        <div class="section-title reveal">
-          <h2 data-i18n="services_title">Servizi</h2>
-          <p data-i18n="services_sub">Un flusso completo per trasformare un concept in una soluzione ingegneristica concreta, elegante e pronta per essere testata.</p>
-        </div>
-        <div class="services">
-          <article class="service card reveal"><span class="icon">◌</span><h3 data-i18n="s1_title">Modellazione 3D</h3><p data-i18n="s1_text">Sviluppo di geometrie complesse, assiemi e ottimizzazione per produzione e validazione.</p></article>
-          <article class="service card reveal"><span class="icon">◌</span><h3 data-i18n="s2_title">Scansione 3D</h3><p data-i18n="s2_text">Digitalizzazione di oggetti e parti esistenti per reverse engineering e retrofit.</p></article>
-          <article class="service card reveal"><span class="icon">◌</span><h3 data-i18n="s3_title">Stampa 3D</h3><p data-i18n="s3_text">Prototipi funzionali, dime, componenti personalizzati e iterazioni rapide ad alta precisione.</p></article>
-          <article class="service card reveal"><span class="icon">◌</span><h3 data-i18n="s4_title">Meccatronica</h3><p data-i18n="s4_text">Progettazione di sistemi robotici e meccanismi intelligenti con integrazione hardware/software.</p></article>
-          <article class="service card reveal"><span class="icon">◌</span><h3 data-i18n="s5_title">FEM / CFD</h3><p data-i18n="s5_text">Analisi strutturali e fluidodinamiche per ridurre rischio, peso e costi di sviluppo.</p></article>
-          <article class="service card reveal"><span class="icon">◌</span><h3 data-i18n="s6_title">Protesi</h3><p data-i18n="s6_text">Soluzioni su misura orientate a funzionalità, comfort e qualità della vita.</p></article>
-        </div>
-      </div>
-    </section>
-
-    <section id="process">
-      <div class="section-inner story">
-        <div class="panel card reveal">
-          <div class="section-title" style="margin-bottom:10px"><h2 data-i18n="process_title">Metodo</h2></div>
-          <p data-i18n="process_text">Lavoriamo con una struttura agile: ascolto, analisi, prototipazione e iterazione. Ogni fase è progettata per mostrare valore rapidamente e migliorare il risultato finale.</p>
-          <div class="timeline">
-            <div class="step"><b>1</b><div><strong data-i18n="p1_title">Brief</strong><div data-i18n="p1_text">Raccolta requisiti, vincoli e obiettivi.</div></div></div>
-            <div class="step"><b>2</b><div><strong data-i18n="p2_title">Sviluppo</strong><div data-i18n="p2_text">Modello, simulazione e prototipo iniziale.</div></div></div>
-            <div class="step"><b>3</b><div><strong data-i18n="p3_title">Validazione</strong><div data-i18n="p3_text">Test, miglioramenti e consegna finale.</div></div></div>
+        <aside class="hero-panel reveal" aria-label="Panoramica servizi">
+          <div class="panel-top">
+            <span data-i18n="paneltop1">Workflow tecnico</span>
+            <span data-i18n="paneltop2">Concept → test → delivery</span>
           </div>
-        </div>
-        <div class="panel card reveal" style="background:linear-gradient(180deg, rgba(255,255,255,.86), rgba(255,255,255,.6))">
-          <div class="section-title" style="margin-bottom:10px"><h2 data-i18n="impact_title">Impatto</h2></div>
-          <p data-i18n="impact_text">Un sito di Modulimb deve trasmettere precisione, modernità e fiducia con animazioni fluide e un’estetica tecnica premium.</p>
-          <div class="stats">
-            <div class="stat"><strong>3D</strong><span data-i18n="st1">Modelli complessi</span></div>
-            <div class="stat"><strong>CAE</strong><span data-i18n="st2">FEM / CFD</span></div>
-            <div class="stat"><strong>RX</strong><span data-i18n="st3">Rapid execution</span></div>
+          <div class="panel-grid">
+            <div class="panel-cell">
+              <strong data-i18n="panel1title">Acquisizione</strong>
+              <p data-i18n="panel1text">Scansione 3D, reverse engineering e definizione dei vincoli funzionali per partire da dati affidabili.</p>
+            </div>
+            <div class="panel-cell">
+              <strong data-i18n="panel2title">Sviluppo</strong>
+              <p data-i18n="panel2text">Modellazione CAD, progettazione meccanica e integrazione hardware/software per sistemi su misura.</p>
+            </div>
+            <div class="panel-cell">
+              <strong data-i18n="panel3title">Validazione</strong>
+              <p data-i18n="panel3text">Analisi FEM/CFD, controlli dimensionali e iterazioni rapide per ridurre rischio e tempi di revisione.</p>
+            </div>
+            <div class="panel-cell">
+              <strong data-i18n="panel4title">Prototipo</strong>
+              <p data-i18n="panel4text">Stampa 3D e produzione rapida di parti funzionali, dime e componenti pronti per test o demo.</p>
+            </div>
           </div>
-        </div>
+          <div class="metric-row">
+            <div class="metric">
+              <b>CAD</b>
+              <span data-i18n="metric1">Geometrie complesse e assiemi</span>
+            </div>
+            <div class="metric">
+              <b>CAE</b>
+              <span data-i18n="metric2">Simulazione strutturale e fluidodinamica</span>
+            </div>
+            <div class="metric">
+              <b>MED</b>
+              <span data-i18n="metric3">Protesi e componenti personalizzati</span>
+            </div>
+          </div>
+        </aside>
       </div>
     </section>
 
-    <section id="contact">
-      <div class="section-inner contact">
-        <div class="panel card reveal">
-          <div class="section-title" style="margin-bottom:10px"><h2 data-i18n="contact_title">Contatto</h2></div>
-          <p data-i18n="contact_text">Inserisci il tuo messaggio e condividi il tipo di progetto: ti risponderemo con una proposta mirata.</p>
-          <form onsubmit="event.preventDefault(); alert(currentLang==='it' ? 'Messaggio pronto per essere collegato a un backend.' : 'Message ready to connect to a backend.');">
-            <input type="text" data-placeholder-it="Nome" data-placeholder-en="Name" placeholder="Nome" />
-            <input type="email" data-placeholder-it="Email" data-placeholder-en="Email" placeholder="Email" />
-            <textarea data-placeholder-it="Descrivi il progetto" data-placeholder-en="Describe the project" placeholder="Descrivi il progetto"></textarea>
-            <button class="btn primary" type="submit" data-i18n="send_btn">Invia richiesta</button>
+    <section class="section" id="services">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <span class="eyebrow" data-i18n="servicesbadge">Competenze</span>
+            <h2 data-i18n="servicestitle">Servizi pensati per ridurre attrito nello sviluppo.</h2>
+          </div>
+          <p data-i18n="servicessub">Ogni attività è organizzata per portare il progetto da un’esigenza tecnica a una soluzione verificabile, senza passaggi ridondanti e con attenzione a tempi, qualità e fattibilità.</p>
+        </div>
+
+        <div class="services-grid">
+          <article class="card reveal">
+            <span class="service-index">01</span>
+            <h3 data-i18n="s1title">Modellazione 3D</h3>
+            <p data-i18n="s1text">Geometrie complesse, assiemi, tolleranze e ottimizzazione del modello per produzione, collaudo e aggiornamenti futuri.</p>
+          </article>
+          <article class="card reveal">
+            <span class="service-index">02</span>
+            <h3 data-i18n="s2title">Scansione 3D</h3>
+            <p data-i18n="s2text">Digitalizzazione di componenti esistenti per retrofit, reverse engineering, confronto dimensionale e ricostruzione CAD.</p>
+          </article>
+          <article class="card reveal">
+            <span class="service-index">03</span>
+            <h3 data-i18n="s3title">Stampa 3D</h3>
+            <p data-i18n="s3text">Prototipi funzionali, dime, attrezzature leggere e parti personalizzate per iterare rapidamente sul prodotto.</p>
+          </article>
+          <article class="card reveal">
+            <span class="service-index">04</span>
+            <h3 data-i18n="s4title">Meccatronica</h3>
+            <p data-i18n="s4text">Sistemi robotici, cinematismi, attuazioni e interfacce hardware/software sviluppati a partire da requisiti reali.</p>
+          </article>
+          <article class="card reveal">
+            <span class="service-index">05</span>
+            <h3 data-i18n="s5title">FEM / CFD</h3>
+            <p data-i18n="s5text">Simulazioni per valutare resistenza, flussi, peso, dissipazione e margini di sicurezza prima della validazione fisica.</p>
+          </article>
+          <article class="card reveal">
+            <span class="service-index">06</span>
+            <h3 data-i18n="s6title">Protesi</h3>
+            <p data-i18n="s6text">Soluzioni su misura orientate a comfort, funzione, adattabilità e qualità della vita, con forte attenzione al contesto d’uso.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="process">
+      <div class="container process-layout">
+        <div class="reveal">
+          <span class="eyebrow" data-i18n="processbadge">Metodo</span>
+          <h2 data-i18n="processtitle" style="font-size: var(--text-2xl); margin-top: 1rem;">Un processo compatto, tecnico e leggibile.</h2>
+          <p data-i18n="processtext" style="margin-top: 1rem;">Modulimb lavora con una struttura agile: ascolto, definizione vincoli, sviluppo, verifica e iterazione. Ogni fase produce materiale utile per decidere il passo successivo con maggiore sicurezza.</p>
+          <div class="steps">
+            <div class="step">
+              <div class="step-badge">1</div>
+              <div>
+                <strong data-i18n="p1title">Brief tecnico</strong>
+                <p data-i18n="p1text">Raccolta requisiti, obiettivi, volumi, prestazioni attese e criticità del progetto.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-badge">2</div>
+              <div>
+                <strong data-i18n="p2title">Sviluppo e simulazione</strong>
+                <p data-i18n="p2text">Costruzione del modello, verifiche digitali, prime scelte di materiali e definizione dei dettagli costruttivi.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-badge">3</div>
+              <div>
+                <strong data-i18n="p3title">Prototipo e validazione</strong>
+                <p data-i18n="p3text">Produzione rapida, test, correzioni e consegna di una soluzione pronta per demo, prova o industrializzazione.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="card reveal">
+          <span class="eyebrow" data-i18n="proofbadge">Perché funziona</span>
+          <ul class="bullet-list" style="margin-top: 1.25rem;">
+            <li><strong data-i18n="b1title">Meno ambiguità.</strong> <span data-i18n="b1text">Dati tecnici, vincoli e fattibilità sono chiariti prima di investire in iterazioni inutili.</span></li>
+            <li><strong data-i18n="b2title">Più velocità utile.</strong> <span data-i18n="b2text">La prototipazione rapida ha valore quando accorcia davvero il ciclo decisionale, non quando crea solo output estetici.</span></li>
+            <li><strong data-i18n="b3title">Più controllo.</strong> <span data-i18n="b3text">Modelli, simulazioni e verifiche aiutano a individuare rischi prima di arrivare alla parte fisica.</span></li>
+            <li><strong data-i18n="b4title">Più aderenza al contesto.</strong> <span data-i18n="b4text">Ogni soluzione viene adattata a uso, materiali, ergonomia, integrazione e obiettivi del progetto.</span></li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="applications">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <span class="eyebrow" data-i18n="applicationsbadge">Applicazioni</span>
+            <h2 data-i18n="applicationstitle">Ambiti in cui la precisione conta davvero.</h2>
+          </div>
+          <p data-i18n="applicationssub">Il sito precedente mostrava il brand, ma spiegava poco dove queste competenze generano valore. Qui il focus è su casi d’uso più chiari per chi deve richiedere un intervento o valutare una collaborazione.</p>
+        </div>
+
+        <div class="applications-grid">
+          <article class="card reveal">
+            <span class="app-tag" data-i18n="a1tag">R&amp;D</span>
+            <h3 data-i18n="a1title">Sviluppo prodotto</h3>
+            <p data-i18n="a1text">Supporto a team tecnici e startup hardware che devono validare geometrie, assemblaggi e componenti prima della produzione.</p>
+          </article>
+          <article class="card reveal">
+            <span class="app-tag" data-i18n="a2tag">Retrofit</span>
+            <h3 data-i18n="a2title">Reverse engineering</h3>
+            <p data-i18n="a2text">Ricostruzione digitale di parti esistenti per aggiornamenti, compatibilità meccaniche, documentazione e repliche controllate.</p>
+          </article>
+          <article class="card reveal">
+            <span class="app-tag" data-i18n="a3tag">Medical</span>
+            <h3 data-i18n="a3title">Dispositivi e protesi</h3>
+            <p data-i18n="a3text">Soluzioni personalizzate in cui ergonomia, adattamento e performance devono convivere con vincoli reali d’uso.</p>
+          </article>
+        </div>
+
+        <div class="visual-strip" style="margin-top: 1.5rem;">
+          <figure class="media-card reveal">
+            <img src="./assets/images/3d-modeling.jpg" alt="Modello 3D tecnico" width="800" height="600" loading="lazy">
+            <figcaption data-i18n="g1">Modellazione CAD e definizione geometrica.</figcaption>
+          </figure>
+          <figure class="media-card reveal">
+            <img src="./assets/images/robotic-arm.jpg" alt="Braccio robotico" width="800" height="600" loading="lazy">
+            <figcaption data-i18n="g2">Meccanismi e integrazione meccatronica.</figcaption>
+          </figure>
+          <figure class="media-card reveal">
+            <img src="./assets/images/prosthetic-arm.jpg" alt="Protesi personalizzata" width="800" height="600" loading="lazy">
+            <figcaption data-i18n="g3">Applicazioni su misura per il settore protesico.</figcaption>
+          </figure>
+          <figure class="media-card reveal">
+            <img src="./assets/images/world-wide-web.jpg" alt="Interfaccia tecnica del brand" width="800" height="600" loading="lazy">
+            <figcaption data-i18n="g4">Presentazione chiara delle competenze tecniche.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="contact">
+      <div class="container contact-layout">
+        <div class="reveal">
+          <span class="eyebrow" data-i18n="contactbadge">Contatto</span>
+          <h2 data-i18n="contacttitle" style="font-size: var(--text-2xl); margin-top: 1rem;">Parlaci del componente, del sistema o del problema da risolvere.</h2>
+          <p data-i18n="contacttext" style="margin-top: 1rem;">Questa versione sostituisce il vecchio form dimostrativo con una struttura pronta per essere collegata a backend, email handler o CRM. Nel frattempo il pulsante genera una mail precompilata verso il contatto principale.</p>
+
+          <form id="contactForm" style="margin-top: 1.5rem;">
+            <label>
+              <span data-i18n="f1">Nome</span>
+              <input type="text" id="name" data-placeholder-it="Nome e azienda" data-placeholder-en="Name and company" placeholder="Nome e azienda" required>
+            </label>
+            <label>
+              <span data-i18n="f2">Email</span>
+              <input type="email" id="email" data-placeholder-it="Email di contatto" data-placeholder-en="Contact email" placeholder="Email di contatto" required>
+            </label>
+            <label>
+              <span data-i18n="f3">Progetto</span>
+              <textarea id="message" data-placeholder-it="Descrivi obiettivo, tempi, vincoli e tipo di supporto richiesto" data-placeholder-en="Describe goals, timing, constraints and support needed" placeholder="Descrivi obiettivo, tempi, vincoli e tipo di supporto richiesto" required></textarea>
+            </label>
+            <button class="btn btn-primary" type="submit" data-i18n="sendbtn">Prepara email</button>
+            <p class="contact-note" data-i18n="contactnote">Suggerimento: collega questo form a Formspree, Netlify Forms, un endpoint personalizzato o al backend del sito per gestire richieste reali.</p>
           </form>
         </div>
-        <div class="panel card reveal" style="display:grid;place-items:center;min-height:360px">
-          <img src="./assets/images/logo-2.jpg" alt="Modulimb logo" style="width:min(100%,420px);height:auto;object-fit:contain;filter:drop-shadow(0 22px 40px rgba(0,0,0,.12))">
-        </div>
+
+        <aside class="card cta-panel reveal">
+          <h3 data-i18n="sidepaneltitle">Contatti diretti</h3>
+          <p data-i18n="sidepaneltext">Per richieste rapide puoi scrivere o chiamare direttamente. LinkedIn resta utile anche per partnership, aggiornamenti tecnici e presentazione del profilo aziendale.</p>
+          <div class="contact-list">
+            <a href="mailto:info@modulimb.it"><span class="dot" aria-hidden="true"></span><span>info@modulimb.it</span></a>
+            <a href="tel:+393397785267"><span class="dot" aria-hidden="true"></span><span>+39 339 7785267</span></a>
+            <a href="https://www.linkedin.com/company/modulimb" target="_blank" rel="noopener noreferrer"><span class="dot" aria-hidden="true"></span><span>LinkedIn / Modulimb</span></a>
+          </div>
+        </aside>
       </div>
     </section>
   </main>
 
-  
-
-
-
-
-
-<section style="padding: 20px 20px 0;">
-  <div class="section-inner">
-    <div class="section-title reveal" style="margin-bottom:16px;">
-      <h2 data-i18n="gallerytitle">Portfolio visivo</h2>
-      <p data-i18n="gallerytext">Una selezione di immagini per rappresentare servizi, identità e applicazioni tecniche del brand.</p>
+  <footer>
+    <div class="container footer-row">
+      <span>Modulimb · 2026</span>
+      <div class="footer-links">
+        <a href="#services" data-i18n="foot1">Servizi</a>
+        <a href="#applications" data-i18n="foot2">Applicazioni</a>
+        <a href="#contact" data-i18n="foot3">Contatto</a>
+      </div>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:stretch;">
-      <figure class="card" style="margin:0;overflow:hidden;">
-        <img src="./assets/images/3d-modeling.jpg" alt="3D modeling" style="width:100%;height:180px;object-fit:cover;display:block;">
-        <figcaption style="padding:12px 14px;color:var(--muted);">3D modeling</figcaption>
-      </figure>
-      <figure class="card" style="margin:0;overflow:hidden;">
-        <img src="./assets/images/robotic-arm.jpg" alt="Robotic arm" style="width:100%;height:180px;object-fit:cover;display:block;">
-        <figcaption style="padding:12px 14px;color:var(--muted);">Robotic arm</figcaption>
-      </figure>
-      <figure class="card" style="margin:0;overflow:hidden;">
-        <img src="./assets/images/prosthetic-arm.jpg" alt="Prosthetic arm" style="width:100%;height:180px;object-fit:cover;display:block;">
-        <figcaption style="padding:12px 14px;color:var(--muted);">Prosthetic arm</figcaption>
-      </figure>
-      <figure class="card" style="margin:0;overflow:hidden;">
-        <img src="./assets/images/world-wide-web.jpg" alt="Modulimb web theme" style="width:100%;height:180px;object-fit:cover;display:block;">
-        <figcaption style="padding:12px 14px;color:var(--muted);">Web theme</figcaption>
-      </figure>
-    </div>
-  </div>
-</section>
-<footer>
-  <div style="display: flex; gap: 1.5rem; justify-content: center; align-items: center; flex-wrap: wrap;">
-    <span style="color: var(--muted);">Modulimb © 2026</span>
-    <a href="mailto:info@modulimb.it" aria-label="Email" style="text-decoration: none; color: var(--muted); display: flex; align-items: center; gap: 6px;">
-      <img src="./assets/images/mail.jpg" alt="" style="height: 18px; width: auto;"> info@modulimb.it
-    </a>
-    <a href="tel:+393397785267" aria-label="Phone" style="text-decoration: none; color: var(--muted); display: flex; align-items: center; gap: 6px;">
-      <img src="./assets/images/phone-call.jpg" alt="" style="height: 18px; width: auto;"> +39 339 7785267
-    </a>
-    <a href="https://www.linkedin.com/company/modulimb" target="_blank" rel="noopener" aria-label="LinkedIn" style="text-decoration: none; color: var(--muted); display: flex; align-items: center; gap: 6px;">
-      <img src="./assets/images/linkedin.jpg" alt="" style="height: 18px; width: auto;"> LinkedIn
-    </a>
-  </div>
-</footer>
->
->
->
->
->
-  <div class="floating"><a href="#top" aria-label="Back to top">↑</a></div>
+  </footer>
 
   <script>
     const dict = {
       it: {
-        nav_services:'Servizi', nav_process:'Processo', nav_contact:'Contatto', hero_badge:'Rapid prototyping • design avanzato', hero_title:'Diamo forma a idee complesse', hero_text:'Modulimb sviluppa prototipi rapidi, dal concept al pezzo funzionale, con modellazione 3D, scansione, stampa 3D, design meccatronico/robotico, analisi FEM/CFD e progettazione di protesi.', cta_primary:'Richiedi un progetto', cta_secondary:'Esplora i servizi', services_title:'Servizi', services_sub:'Un flusso completo per trasformare un concept in una soluzione ingegneristica concreta, elegante e pronta per essere testata.', s1_title:'Modellazione 3D', s1_text:'Sviluppo di geometrie complesse, assiemi e ottimizzazione per produzione e validazione.', s2_title:'Scansione 3D', s2_text:'Digitalizzazione di oggetti e parti esistenti per reverse engineering e retrofit.', s3_title:'Stampa 3D', s3_text:'Prototipi funzionali, dime, componenti personalizzati e iterazioni rapide ad alta precisione.', s4_title:'Meccatronica', s4_text:'Progettazione di sistemi robotici e meccanismi intelligenti con integrazione hardware/software.', s5_title:'FEM / CFD', s5_text:'Analisi strutturali e fluidodinamiche per ridurre rischio, peso e costi di sviluppo.', s6_title:'Protesi', s6_text:'Soluzioni su misura orientate a funzionalità, comfort e qualità della vita.', process_title:'Metodo', process_text:'Lavoriamo con una struttura agile: ascolto, analisi, prototipazione e iterazione. Ogni fase è progettata per mostrare valore rapidamente e migliorare il risultato finale.', p1_title:'Brief', p1_text:'Raccolta requisiti, vincoli e obiettivi.', p2_title:'Sviluppo', p2_text:'Modello, simulazione e prototipo iniziale.', p3_title:'Validazione', p3_text:'Test, miglioramenti e consegna finale.', impact_title:'Impatto', impact_text:'Un sito di Modulimb deve trasmettere precisione, modernità e fiducia con animazioni fluide e un’estetica tecnica premium.', st1:'Modelli complessi', st2:'FEM / CFD', st3:'Rapid execution', contact_title:'Contatto', contact_text:'Inserisci il tuo messaggio e condividi il tipo di progetto: ti risponderemo con una proposta mirata.', send_btn:'Invia richiesta'
+        navservices: 'Servizi', navprocess: 'Metodo', navapplications: 'Applicazioni', navcontact: 'Contatto',
+        herobadge: 'Rapid prototyping · engineering development',
+        herotitle: 'Dallo studio del componente al prototipo pronto da validare.',
+        herotext: 'Modulimb supporta aziende, studi tecnici e progetti medicali con modellazione 3D, scansione, stampa, simulazione e sviluppo meccatronico. L’obiettivo non è mostrare tecnologia, ma accelerare decisioni, test e industrializzazione.',
+        ctaprimary: 'Richiedi una valutazione', ctasecondary: 'Vedi le competenze',
+        paneltop1: 'Workflow tecnico', paneltop2: 'Concept → test → delivery',
+        panel1title: 'Acquisizione', panel1text: 'Scansione 3D, reverse engineering e definizione dei vincoli funzionali per partire da dati affidabili.',
+        panel2title: 'Sviluppo', panel2text: 'Modellazione CAD, progettazione meccanica e integrazione hardware/software per sistemi su misura.',
+        panel3title: 'Validazione', panel3text: 'Analisi FEM/CFD, controlli dimensionali e iterazioni rapide per ridurre rischio e tempi di revisione.',
+        panel4title: 'Prototipo', panel4text: 'Stampa 3D e produzione rapida di parti funzionali, dime e componenti pronti per test o demo.',
+        metric1: 'Geometrie complesse e assiemi', metric2: 'Simulazione strutturale e fluidodinamica', metric3: 'Protesi e componenti personalizzati',
+        servicesbadge: 'Competenze', servicestitle: 'Servizi pensati per ridurre attrito nello sviluppo.',
+        servicessub: 'Ogni attività è organizzata per portare il progetto da un’esigenza tecnica a una soluzione verificabile, senza passaggi ridondanti e con attenzione a tempi, qualità e fattibilità.',
+        s1title: 'Modellazione 3D', s1text: 'Geometrie complesse, assiemi, tolleranze e ottimizzazione del modello per produzione, collaudo e aggiornamenti futuri.',
+        s2title: 'Scansione 3D', s2text: 'Digitalizzazione di componenti esistenti per retrofit, reverse engineering, confronto dimensionale e ricostruzione CAD.',
+        s3title: 'Stampa 3D', s3text: 'Prototipi funzionali, dime, attrezzature leggere e parti personalizzate per iterare rapidamente sul prodotto.',
+        s4title: 'Meccatronica', s4text: 'Sistemi robotici, cinematismi, attuazioni e interfacce hardware/software sviluppati a partire da requisiti reali.',
+        s5title: 'FEM / CFD', s5text: 'Simulazioni per valutare resistenza, flussi, peso, dissipazione e margini di sicurezza prima della validazione fisica.',
+        s6title: 'Protesi', s6text: 'Soluzioni su misura orientate a comfort, funzione, adattabilità e qualità della vita, con forte attenzione al contesto d’uso.',
+        processbadge: 'Metodo', processtitle: 'Un processo compatto, tecnico e leggibile.',
+        processtext: 'Modulimb lavora con una struttura agile: ascolto, definizione vincoli, sviluppo, verifica e iterazione. Ogni fase produce materiale utile per decidere il passo successivo con maggiore sicurezza.',
+        p1title: 'Brief tecnico', p1text: 'Raccolta requisiti, obiettivi, volumi, prestazioni attese e criticità del progetto.',
+        p2title: 'Sviluppo e simulazione', p2text: 'Costruzione del modello, verifiche digitali, prime scelte di materiali e definizione dei dettagli costruttivi.',
+        p3title: 'Prototipo e validazione', p3text: 'Produzione rapida, test, correzioni e consegna di una soluzione pronta per demo, prova o industrializzazione.',
+        proofbadge: 'Perché funziona',
+        b1title: 'Meno ambiguità.', b1text: 'Dati tecnici, vincoli e fattibilità sono chiariti prima di investire in iterazioni inutili.',
+        b2title: 'Più velocità utile.', b2text: 'La prototipazione rapida ha valore quando accorcia davvero il ciclo decisionale, non quando crea solo output estetici.',
+        b3title: 'Più controllo.', b3text: 'Modelli, simulazioni e verifiche aiutano a individuare rischi prima di arrivare alla parte fisica.',
+        b4title: 'Più aderenza al contesto.', b4text: 'Ogni soluzione viene adattata a uso, materiali, ergonomia, integrazione e obiettivi del progetto.',
+        applicationsbadge: 'Applicazioni', applicationstitle: 'Ambiti in cui la precisione conta davvero.',
+        applicationssub: 'Il sito precedente mostrava il brand, ma spiegava poco dove queste competenze generano valore. Qui il focus è su casi d’uso più chiari per chi deve richiedere un intervento o valutare una collaborazione.',
+        a1tag: 'R&D', a1title: 'Sviluppo prodotto', a1text: 'Supporto a team tecnici e startup hardware che devono validare geometrie, assemblaggi e componenti prima della produzione.',
+        a2tag: 'Retrofit', a2title: 'Reverse engineering', a2text: 'Ricostruzione digitale di parti esistenti per aggiornamenti, compatibilità meccaniche, documentazione e repliche controllate.',
+        a3tag: 'Medical', a3title: 'Dispositivi e protesi', a3text: 'Soluzioni personalizzate in cui ergonomia, adattamento e performance devono convivere con vincoli reali d’uso.',
+        g1: 'Modellazione CAD e definizione geometrica.', g2: 'Meccanismi e integrazione meccatronica.', g3: 'Applicazioni su misura per il settore protesico.', g4: 'Presentazione chiara delle competenze tecniche.',
+        contactbadge: 'Contatto', contacttitle: 'Parlaci del componente, del sistema o del problema da risolvere.',
+        contacttext: 'Questa versione sostituisce il vecchio form dimostrativo con una struttura pronta per essere collegata a backend, email handler o CRM. Nel frattempo il pulsante genera una mail precompilata verso il contatto principale.',
+        f1: 'Nome', f2: 'Email', f3: 'Progetto', sendbtn: 'Prepara email',
+        contactnote: 'Suggerimento: collega questo form a Formspree, Netlify Forms, un endpoint personalizzato o al backend del sito per gestire richieste reali.',
+        sidepaneltitle: 'Contatti diretti', sidepaneltext: 'Per richieste rapide puoi scrivere o chiamare direttamente. LinkedIn resta utile anche per partnership, aggiornamenti tecnici e presentazione del profilo aziendale.',
+        foot1: 'Servizi', foot2: 'Applicazioni', foot3: 'Contatto'
       },
       en: {
-        nav_services:'Services', nav_process:'Process', nav_contact:'Contact', hero_badge:'Rapid prototyping • advanced design', hero_title:'We shape complex ideas', hero_text:'Modulimb develops rapid prototypes, from concept to functional part, with 3D modeling, scanning, 3D printing, mechatronic/robotic design, FEM/CFD analysis, and prosthetic design.', cta_primary:'Request a project', cta_secondary:'Explore services', services_title:'Services', services_sub:'A complete workflow that turns a concept into a real engineering solution, refined and ready to test.', s1_title:'3D Modeling', s1_text:'Development of complex geometry, assemblies, and optimization for manufacturing and validation.', s2_title:'3D Scanning', s2_text:'Digitization of objects and existing parts for reverse engineering and retrofit.', s3_title:'3D Printing', s3_text:'Functional prototypes, fixtures, custom parts, and fast high-precision iterations.', s4_title:'Mechatronics', s4_text:'Design of robotic systems and smart mechanisms with hardware/software integration.', s5_title:'FEM / CFD', s5_text:'Structural and fluid-dynamics analysis to reduce risk, weight, and development costs.', s6_title:'Prosthetics', s6_text:'Custom solutions focused on functionality, comfort, and quality of life.', process_title:'Method', process_text:'We work with an agile structure: listening, analysis, prototyping, and iteration. Every phase is designed to show value quickly and improve the final result.', p1_title:'Brief', p1_text:'Requirements, constraints, and objectives.', p2_title:'Development', p2_text:'Model, simulation, and first prototype.', p3_title:'Validation', p3_text:'Testing, improvements, and final delivery.', impact_title:'Impact', impact_text:'A Modulimb website should convey precision, modernity, and trust with fluid animations and a premium technical aesthetic.', st1:'Complex models', st2:'FEM / CFD', st3:'Rapid execution', contact_title:'Contact', contact_text:'Send your message and share the project type: we will reply with a tailored proposal.', send_btn:'Send request'
+        navservices: 'Services', navprocess: 'Method', navapplications: 'Applications', navcontact: 'Contact',
+        herobadge: 'Rapid prototyping · engineering development',
+        herotitle: 'From component study to a prototype ready for validation.',
+        herotext: 'Modulimb supports companies, technical teams, and medical projects with 3D modeling, scanning, printing, simulation, and mechatronic development. The goal is not to display technology, but to accelerate decisions, testing, and industrialization.',
+        ctaprimary: 'Request an evaluation', ctasecondary: 'View capabilities',
+        paneltop1: 'Technical workflow', paneltop2: 'Concept → test → delivery',
+        panel1title: 'Acquisition', panel1text: '3D scanning, reverse engineering, and definition of functional constraints based on reliable starting data.',
+        panel2title: 'Development', panel2text: 'CAD modeling, mechanical design, and hardware/software integration for tailored systems.',
+        panel3title: 'Validation', panel3text: 'FEM/CFD analysis, dimensional checks, and fast iterations to reduce risk and review cycles.',
+        panel4title: 'Prototype', panel4text: '3D printing and rapid production of functional parts, fixtures, and components ready for testing or demo.',
+        metric1: 'Complex geometry and assemblies', metric2: 'Structural and fluid simulation', metric3: 'Prosthetics and custom components',
+        servicesbadge: 'Capabilities', servicestitle: 'Services designed to remove friction from development.',
+        servicessub: 'Each activity is structured to move a project from technical need to verifiable solution, without redundant steps and with clear attention to timing, quality, and feasibility.',
+        s1title: '3D Modeling', s1text: 'Complex geometry, assemblies, tolerances, and model optimization for production, testing, and future updates.',
+        s2title: '3D Scanning', s2text: 'Digitization of existing parts for retrofit, reverse engineering, dimensional comparison, and CAD reconstruction.',
+        s3title: '3D Printing', s3text: 'Functional prototypes, jigs, lightweight tooling, and custom parts for fast product iteration.',
+        s4title: 'Mechatronics', s4text: 'Robotic systems, kinematics, actuation, and hardware/software interfaces built around real requirements.',
+        s5title: 'FEM / CFD', s5text: 'Simulation to assess strength, flow, weight, heat behavior, and safety margins before physical validation.',
+        s6title: 'Prosthetics', s6text: 'Custom solutions focused on comfort, function, adaptability, and quality of life, with strong attention to context of use.',
+        processbadge: 'Method', processtitle: 'A compact, technical, and readable process.',
+        processtext: 'Modulimb works with an agile structure: listening, constraint definition, development, verification, and iteration. Each phase produces material that supports better next-step decisions.',
+        p1title: 'Technical brief', p1text: 'Collection of requirements, goals, expected performance, volumes, and project constraints.',
+        p2title: 'Development and simulation', p2text: 'Model construction, digital verification, early material choices, and definition of manufacturing details.',
+        p3title: 'Prototype and validation', p3text: 'Rapid production, testing, corrections, and delivery of a solution ready for demo, trial, or industrialization.',
+        proofbadge: 'Why it works',
+        b1title: 'Less ambiguity.', b1text: 'Technical data, feasibility, and constraints are clarified before investing in unnecessary iterations.',
+        b2title: 'More useful speed.', b2text: 'Rapid prototyping matters when it shortens decision cycles, not when it only creates attractive output.',
+        b3title: 'More control.', b3text: 'Models, simulations, and verification help identify risks before moving to the physical phase.',
+        b4title: 'Better fit to context.', b4text: 'Each solution is tailored to use case, materials, ergonomics, integration, and project goals.',
+        applicationsbadge: 'Applications', applicationstitle: 'Fields where precision truly matters.',
+        applicationssub: 'The previous site showed the brand, but explained too little about where these capabilities create value. This version shifts the focus toward clearer use cases for potential clients and collaborators.',
+        a1tag: 'R&D', a1title: 'Product development', a1text: 'Support for technical teams and hardware startups that need to validate geometry, assemblies, and components before production.',
+        a2tag: 'Retrofit', a2title: 'Reverse engineering', a2text: 'Digital reconstruction of existing parts for updates, mechanical compatibility, documentation, and controlled replication.',
+        a3tag: 'Medical', a3title: 'Devices and prosthetics', a3text: 'Custom solutions where ergonomics, adaptation, and performance must coexist with real use constraints.',
+        g1: 'CAD modeling and geometric definition.', g2: 'Mechanisms and mechatronic integration.', g3: 'Custom applications for prosthetic work.', g4: 'Clear presentation of technical capabilities.',
+        contactbadge: 'Contact', contacttitle: 'Tell us about the component, system, or problem you need to solve.',
+        contacttext: 'This version replaces the previous demo-only form with a structure ready to connect to a backend, email handler, or CRM. For now, the button generates a prefilled email to the main contact.',
+        f1: 'Name', f2: 'Email', f3: 'Project', sendbtn: 'Prepare email',
+        contactnote: 'Tip: connect this form to Formspree, Netlify Forms, a custom endpoint, or the site backend to handle real submissions.',
+        sidepaneltitle: 'Direct contacts', sidepaneltext: 'For quick requests, you can write or call directly. LinkedIn is also useful for partnerships, technical updates, and company profile presentation.',
+        foot1: 'Services', foot2: 'Applications', foot3: 'Contact'
       }
     };
-    let currentLang='it';
-    const setLang=(lang)=>{
-      currentLang=lang;
-      document.documentElement.lang=lang;
-      document.querySelectorAll('[data-i18n]').forEach(el=>el.textContent=dict[lang][el.dataset.i18n]||el.textContent);
-      document.querySelectorAll('[data-placeholder-it]').forEach(el=>el.placeholder=lang==='it'?el.dataset.placeholderIt:el.dataset.placeholderEn);
-      itBtn.classList.toggle('active',lang==='it'); enBtn.classList.toggle('active',lang==='en');
+
+    let currentLang = 'it';
+    const html = document.documentElement;
+    const itBtn = document.getElementById('itBtn');
+    const enBtn = document.getElementById('enBtn');
+
+    function applyLang(lang) {
+      currentLang = lang;
+      html.lang = lang;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (dict[lang][key]) el.textContent = dict[lang][key];
+      });
+      document.querySelectorAll('[data-placeholder-it]').forEach(el => {
+        el.placeholder = lang === 'it' ? el.dataset.placeholderIt : el.dataset.placeholderEn;
+      });
+      itBtn.classList.toggle('active', lang === 'it');
+      enBtn.classList.toggle('active', lang === 'en');
+    }
+
+    itBtn.addEventListener('click', () => applyLang('it'));
+    enBtn.addEventListener('click', () => applyLang('en'));
+
+    const themeToggle = document.querySelector('[data-theme-toggle]');
+    let theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    html.setAttribute('data-theme', theme);
+    const setThemeIcon = () => {
+      themeToggle.innerHTML = theme === 'dark'
+        ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
+        : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+      themeToggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
     };
-    itBtn.onclick=()=>setLang('it'); enBtn.onclick=()=>setLang('en');
-    const reveals=[...document.querySelectorAll('.reveal')];
-    const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.12});
-    reveals.forEach(el=>io.observe(el));
-    const parallaxEls=[...document.querySelectorAll('[data-parallax]')];
-    const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
-    window.addEventListener('scroll',()=>{const y=window.scrollY; parallaxEls.forEach(el=>{const r=parseFloat(el.dataset.parallax||0); el.style.transform=`translate3d(0, ${clamp(y*r*.12,-40,40)}px, 0)`;});},{passive:true});
-    setLang('it');
+    setThemeIcon();
+    themeToggle.addEventListener('click', () => {
+      theme = theme === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', theme);
+      setThemeIcon();
+    });
+
+    document.getElementById('contactForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+      const name = encodeURIComponent(document.getElementById('name').value.trim());
+      const email = encodeURIComponent(document.getElementById('email').value.trim());
+      const message = encodeURIComponent(document.getElementById('message').value.trim());
+      const subject = currentLang === 'it' ? 'Richiesta progetto da sito Modulimb' : 'Project request from Modulimb website';
+      const body = currentLang === 'it'
+        ? `Nome: ${decodeURIComponent(name)}%0AEmail: ${decodeURIComponent(email)}%0A%0AProgetto:%0A${decodeURIComponent(message)}`
+        : `Name: ${decodeURIComponent(name)}%0AEmail: ${decodeURIComponent(email)}%0A%0AProject:%0A${decodeURIComponent(message)}`;
+      window.location.href = `mailto:info@modulimb.it?subject=${encodeURIComponent(subject)}&body=${body}`;
+    });
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    applyLang('it');
   </script>
 </body>
 </html>
